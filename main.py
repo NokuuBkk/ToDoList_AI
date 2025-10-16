@@ -1,8 +1,42 @@
 import sys
 import uuid
+import json
 from datetime import datetime
+from pathlib import Path
+
+TASKS_FILE = Path("tasks.json")
 
 tasks = []
+
+
+def load_tasks():
+	"""Load tasks from TASKS_FILE. If file missing, start with empty list."""
+	global tasks
+	if not TASKS_FILE.exists():
+		tasks = []
+		return
+
+	try:
+		with TASKS_FILE.open("r", encoding="utf-8") as f:
+			data = json.load(f)
+			# Basic validation: expect a list of dict-like objects
+			if isinstance(data, list):
+				tasks = data
+			else:
+				print("tasks.json มีรูปแบบไม่ถูกต้อง: เริ่มด้วยรายการว่าง")
+				tasks = []
+	except Exception as e:
+		print(f"ไม่สามารถโหลด tasks.json: {e}")
+		tasks = []
+
+
+def save_tasks():
+	"""Save current tasks to TASKS_FILE as JSON."""
+	try:
+		with TASKS_FILE.open("w", encoding="utf-8") as f:
+			json.dump(tasks, f, ensure_ascii=False, indent=2)
+	except Exception as e:
+		print(f"ไม่สามารถบันทึกไฟล์ tasks.json: {e}")
 
 
 def add_task():
@@ -146,11 +180,14 @@ def main_menu():
 		elif choice == "4":
 			delete_task()
 		elif choice == "5":
-			print("ออกจากโปรแกรม. ลาก่อน!")
+			print("ออกจากโปรแกรม. กำลังบันทึกข้อมูลงาน...")
+			save_tasks()
+			print("บันทึกเรียบร้อย. ลาก่อน!")
 			sys.exit(0)
 		else:
 			print("ตัวเลือกไม่ถูกต้อง กรุณาเลือก 1-5")
 
 
 if __name__ == "__main__":
+	load_tasks()
 	main_menu()
