@@ -1,9 +1,33 @@
 import sys
+import uuid
+from datetime import datetime
+
+tasks = []
 
 
 def add_task():
-	"""Placeholder: add a new task."""
-	pass
+	"""Prompt user to add a new task and append to tasks list."""
+	title = input("Title: ").strip()
+	description = input("Description: ").strip()
+	due_date_str = input("Due date (YYYY-MM-DD) [optional]: ").strip()
+
+	due_date = None
+	if due_date_str:
+		try:
+			due_date = datetime.strptime(due_date_str, "%Y-%m-%d").date().isoformat()
+		except ValueError:
+			print("Invalid date format. Saving without due date.")
+
+	task = {
+		"id": str(uuid.uuid4()),
+		"title": title,
+		"description": description,
+		"due_date": due_date,
+		"completed": False,
+	}
+
+	tasks.append(task)
+	print(f"Task added. id={task['id']}")
 
 
 def view_tasks():
