@@ -93,8 +93,37 @@ def update_task():
 
 
 def delete_task():
-	"""Placeholder: delete a task."""
-	pass
+	"""Delete a task selected by index with confirmation.
+
+	Prompts the user for the task index, validates it, shows a brief
+	overview and asks: "ต้องการลบงานนี้จริงหรือไม่ (y/n):"
+	"""
+	if not tasks:
+		print("ยังไม่มีงานในรายการ")
+		return
+
+	for idx, t in enumerate(tasks, start=1):
+		print(f"{idx}. {t.get('title')}")
+
+	idx_str = input("เลือกหมายเลขงานที่ต้องการลบ: ").strip()
+	if not idx_str.isdigit():
+		print("หมายเลขไม่ถูกต้อง")
+		return
+
+	idx = int(idx_str) - 1
+	if idx < 0 or idx >= len(tasks):
+		print("หมายเลขงานไม่ถูกต้อง")
+		return
+
+	task = tasks[idx]
+	print()
+	print(f"จะลบ: {task.get('title')} (due: {task.get('due_date') or '-'})")
+	confirm = input("ต้องการลบงานนี้จริงหรือไม่ (y/n): ").strip().lower()
+	if confirm in ("y", "yes"):
+		del tasks[idx]
+		print("ลบงานเรียบร้อยแล้ว")
+	else:
+		print("ยกเลิกการลบ")
 
 
 def main_menu():
