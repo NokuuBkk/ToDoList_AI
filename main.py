@@ -31,8 +31,19 @@ def add_task():
 
 
 def view_tasks():
-	"""Placeholder: view all tasks."""
-	pass
+	"""Display all tasks: index, title, due_date, and status.
+
+	If there are no tasks, print a Thai message informing the user.
+	"""
+	if not tasks:
+		print("ยังไม่มีงานในรายการ")
+		return
+
+	print("\nรายการงานทั้งหมด:")
+	for idx, task in enumerate(tasks, start=1):
+		status = "เสร็จแล้ว" if task.get("completed") else "ยังไม่เสร็จ"
+		due = task.get("due_date") or "-"
+		print(f"{idx}. {task.get('title')}  |  Due: {due}  |  {status}")
 
 
 def edit_task():
